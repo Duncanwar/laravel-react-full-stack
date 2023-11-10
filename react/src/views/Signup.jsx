@@ -1,8 +1,37 @@
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import axiosClient from "../axios-client";
+import { useStateContext } from "../contexts/ContextProvider";
 
 function Signup() {
+    const nameRef = useRef()
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const passwordConfirmationRef = useRef()
+
+    const {setUser,setContext} = useStateContext()
+
+
     const onSubmit = (ev) =>{
         ev.preventDefault();
+        const payload = {
+            email:emailRef.current.value,
+            name: nameRef.current.value,
+            password:passwordRef.current.value,
+            password_confirmation:passwordConfirmationRef.current.value
+        }
+    axiosClient.post("/signup", payload)
+    .then(({data})=>{
+        setUser(data.user)
+        setToken(data.token)
+    })
+    .catch(err=>{
+        const response = err.response;
+        if(response && response.status===422){
+            console.log(response.data.errors);  
+        }
+    })
+    console.log(payload)
     }
     return ( 
         <div className="login-signup-form animated fadeInDown">
@@ -11,17 +40,17 @@ function Signup() {
                 <h1 className="title">
                    Login into your account 
                 </h1>
-                <input type="emaitextl" placeholder="Full Name" />
-                <input type="email" placeholder="Email Address" />
-                <input type="password" placeholder="Password" />
-                <input type="password" placeholder="Password Confirmation" />
+                <input ref={nameRef} type="emaitextl" placeholder="Full Name" />
+                <input ref={emailRef} type="email" placeholder="Email Address" />
+                <input ref={passwordRef} type="password" placeholder="Password" />
+                <input ref={passwordConfirmationRef} type="password" placeholder="Password Confirmation" />
                 <button className="btn btn-block">Login</button>
                 <p className="message">
                     Already Registered? <Link to="/login">Sign in</Link>
                 </p>
             </form>
         </div>
-    </div>
+    </div>  
      );
 }
 
