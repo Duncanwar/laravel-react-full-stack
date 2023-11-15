@@ -7,7 +7,6 @@ export default  function GuestLayout() {
     return <Navigate to="/users"/>
    }
     return ( <div>
-        Guest
 <Outlet />
     </div> );
 }
