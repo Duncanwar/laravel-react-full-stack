@@ -49,6 +49,7 @@ class UserController extends Controller
         $data['password'] = bcrypt($data['password']);
       }
       $user->update($data);
+      return new UserResource($user);
     }
 
     /**
